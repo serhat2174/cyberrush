@@ -1,0 +1,544 @@
+<!doctype html>
+<html>
+<head>
+  <title>cyber rush</title>
+  <!-- Add the viewport meta tag to set the canvas to the full screen size -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<style>
+  body {
+    background-image: url('https://3.bp.blogspot.com/-DUaiSfM9ra4/UIMDetO6AhI/AAAAAAAADrc/PQVqzOzlYZI/s1600/Tileable+asphalt+road+surface+texture+cracked');
+    background-size: 15%;
+    animation: scroll 400s linear infinite; /* This will make the background image scroll continuously */
+}
+
+@keyframes scroll {
+  /* The keyframes for the scroll animation */
+  from {
+    background-position: 0% 0%; /* Start the background image at the top left corner */
+  }
+  to {
+    background-position: 0% 20000%; /* End the background image at the bottom left corner */
+  }
+}
+</style>
+  <!-- Change the canvas size to match the viewport size -->
+  <canvas id="gameCanvas" ></canvas>
+
+  <!-- Add image elements for the player and enemy -->
+  <img id="playerImg" src="https://www.cybertruckownersclub.com/forum/attachments/cybertruck-overhead-png.1644/" style="display:none;">
+  <img id="enemyImg" src="enemy1.png" style="display:none;">
+  <img id="enemy2Img" src="truck2.png" style="display:none;">
+  <img id="enemy3Img" src="enemy3.png" style="display:none;">
+  <img id="enemy4Img" src="truck.png" style="display:none;">
+  <img id="coinImage" src="https://www.pngkey.com/png/full/63-636640_ki-ball-electric-v-blue-energy-ball-png.png" style="display: none;">
+  <img id="fireImg" src="https://www.nicepng.com/png/full/129-1293144_graphic-download-electricity-transparent-light-burst-lightning-png.png" style="display:none;">
+  <img id="rocketImg" src="pngegg.png" style="display: none;">
+   <!-- Add an audio element for the point sound -->
+   <audio id="pointSound" src="https://assets.mixkit.co/sfx/preview/mixkit-screechy-electified-item-3213.mp3" style="display:none"></audio>
+   <audio id="crashSound" src="https://www.fesliyanstudios.com/play-mp3/7747" style="display:none"></audio>
+   <audio id="crashSound2" src="https://assets.mixkit.co/sfx/preview/mixkit-futuristic-device-fail-2939.mp3" style="display:none"></audio>
+   <audio id="rocketSound" src="https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-31172/zapsplat_explosion_slight_distance_glass_break_then_shockwave_pass_by_31227.mp3" style="display:none"></audio>
+   <audio id="rocketSound2" src="https://assets.mixkit.co/sfx/preview/mixkit-war-explosions-2773.mp3" style="display:none"></audio>
+   <audio id="gameMusic" src="https://d1s1y0ui543e5o.cloudfront.net/tracks/1458/preview/811.mp3" loop></audio>
+  <script>
+    
+  // Initialize the canvas element and context
+  var counter = 0;
+  var windowWidth = window.innerWidth;
+  var windowHeight = window.innerHeight;
+  var canvas = document.getElementById("gameCanvas");
+  var ctx = canvas.getContext("2d");
+  document.getElementById("gameCanvas").width = windowWidth * 0.98;
+  document.getElementById("gameCanvas").height = windowHeight * 0.98;
+    // Set up the player's rocket variables
+  var rocketFired = false;
+  var rocketX = playerX + playerWidth / 3.3;
+  var rocketY = playerY;
+  var rocketWidth = 100;
+  var rocketHeight = 100;
+  var rocketSpeed = 20;
+  
+  var fireWidth = 20;
+  var fireHeight = 50;
+  // Set up the player's starting position
+  var playerX = canvas.width / 2;
+  var playerY = canvas.height / 1.2;
+
+  // Set up the player's movement variables
+  var rightPressed = false;
+  var leftPressed = false;
+  var upPressed = false;
+  var downPressed = false;
+
+  // Set up the player's speed
+  var playerSpeed = 7;
+
+  // Set up the player's size
+  var playerWidth = 200;
+  var playerHeight = 180;
+
+  // Set up the enemy's starting position
+  var enemyX = canvas.width / 2.1;
+  var enemyY = 0;
+
+  // Set up the enemy's size
+  var enemyWidth = 45;
+  var enemyHeight = 80;
+
+  // Set up the enemy's speed
+  var enemySpeed = 8;
+
+  // Set up the second enemy's starting position
+  var enemy2X = canvas.width / 0.1;
+  var enemy2Y = 0;
+
+  // Set up the second enemy's size
+  var enemy2Width = 45;
+  var enemy2Height = 80;
+
+  // Set up the second enemy's speed
+  var enemy2Speed = 6.7;
+
+  // Set up the second enemy's starting position
+  var enemy3X = canvas.width / 1.5;
+  var enemy3Y = 0;
+
+  // Set up the second enemy's size
+  var enemy3Width = 60;
+  var enemy3Height = 130;
+
+  // Set up the second enemy's speed
+  var enemy3Speed = 5;
+ 
+    // Set up the second enemy's starting position
+    var enemy4X = canvas.width / 0.9;
+  var enemy4Y = 0;
+
+  // Set up the second enemy's size
+  var enemy4Width = 60;
+  var enemy4Height = 130;
+
+  // Set up the second enemy's speed
+  var enemy4Speed = 4.3;
+
+  // Set up the coin's starting position
+  var coinX = Math.random() * (canvas.width - 50);
+  var coinY = Math.random() * (canvas.height - 50);
+  
+
+  // Set up the coin's size
+  var coinWidth = 50;
+  var coinHeight = 50;
+
+  // Set up the coin's speed
+  var coinSpeed = 3.45;
+
+  // Set up the player's score
+  var score = 0;
+
+  // Set up the top score
+  var topScore = 0;
+  if (localStorage.getItem("topScore")) {
+    topScore = localStorage.getItem("topScore");
+  }
+
+  // Set up the energy bar
+  var energy = 300;
+
+  // Set up the game over flag
+  var gameOver = false;
+
+  // Load the player image
+  var playerImg = document.getElementById("playerImg");
+
+  // Load the enemy image
+  var enemyImg = document.getElementById("enemyImg");
+
+  // Load the coin image
+  var coinImg = document.getElementById("coinImage");
+  var rocketImg = document.getElementById("rocketImg");
+  var fireImg = document.getElementById("fireImg");
+  // Load the point sound
+  var pointSound = document.getElementById("pointSound");
+
+  // Load the crash sound
+  var crashSound = document.getElementById("crashSound");
+  var crashSound2 = document.getElementById("crashSound2");
+  var rocketSound = document.getElementById("rocketSound");
+  var rocketSound2 = document.getElementById("rocketSound2");
+  // Load the game music
+  var gameMusic = document.getElementById("gameMusic");
+  gameMusic.volume = 0.4;
+  
+
+  // Set up the event listeners for the player's movement
+  document.addEventListener("keydown", keyDownHandler, false);
+  document.addEventListener("keyup", keyUpHandler, false);
+
+
+
+
+
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play();
+}
+// Set up the keydown event handler
+function keyDownHandler(e) {
+  if (e.keyCode == 39) {
+    rightPressed = true;
+  }
+  else if (e.keyCode == 37) {
+    leftPressed = true;
+  }
+  if (e.keyCode == 38) {
+    upPressed = true;
+    }
+    else if (e.keyCode == 40) {
+      downPressed = true;
+    }
+  }
+
+  // Set up the keyup event handler
+  function keyUpHandler(e) {
+    if (e.keyCode == 39) {
+      rightPressed = false;
+    }
+    else if (e.keyCode == 37) {
+      leftPressed = false;
+    }
+    if (e.keyCode == 38) {
+      upPressed = false;
+    }
+    else if (e.keyCode == 40) {
+      downPressed = false;
+    }
+  }
+
+  // Set up the collision detection function
+  function collisionDetection() {
+    // Check for a collision between the player and the enemy
+    if  (playerX < enemyX - 25 &&
+          playerX + 125 > enemyX &&
+          playerY < enemyY + 40 &&
+          110 + playerY > enemyY) {
+      // Play the crash sound
+      playSound(crashSound);
+
+      // Set the game over flag
+      gameOver = true;
+    }
+    if  (playerX < enemy2X - 25 &&
+          playerX + 125 > enemy2X &&
+          playerY < enemy2Y + 40 &&
+          110 + playerY > enemy2Y) {
+      // Play the crash sound
+      playSound(crashSound);
+
+      // Set the game over flag
+      gameOver = true;
+    }
+    if  (playerX < enemy3X - 25 &&
+          playerX + 125 > enemy3X &&
+          playerY < enemy3Y + 40 &&
+          110 + playerY > enemy3Y) {
+      // Play the crash sound
+      playSound(crashSound);
+
+      // Set the game over flag
+      gameOver = true;
+    }
+    if  (playerX < enemy4X - 25 &&
+          playerX + 125 > enemy4X &&
+          playerY < enemy4Y + 40 &&
+          110 + playerY > enemy4Y) {
+      // Play the crash sound
+      playSound(crashSound);
+
+      // Set the game over flag
+      gameOver = true;
+    }
+
+    // Check for a collision between the player and the coin
+    if (playerX < coinX + coinWidth && playerX + playerWidth > coinX && playerY < coinY + coinHeight && playerY + playerHeight > coinY) {
+      // Play the point sound
+      playSound(pointSound);
+
+      // Increase the score
+      score++;
+
+      // Increase the energy
+      energy += 50;
+
+      // Limit the maximum energy to 100
+      if (energy > 2000) {
+        energy = 2000;
+      }
+
+      // Generate a new coin position
+      coinX = Math.random() * (canvas.width - 50);
+      coinY = Math.random() * (canvas.height - 50);
+    }
+  }
+  // Function to handle the player firing a rocket
+function fireRocket() {
+  // Reset the rocket sound to the beginning of the file
+  rocketSound2.currentTime = 0;
+
+  // Set the rocket's position to the player's position
+  rocketX = playerX + playerWidth / 3.3;
+  rocketY = playerY;
+  // Play the rocket sound
+  rocketSound2.play();
+  energy -= 20;
+  // Set the rocketFired flag to true
+  rocketFired = true;
+}
+// Function to draw the fire at a given position
+function drawFire(x, y) {
+  // Draw the fire image at the given position
+  ctx.drawImage(fireImg, x, y, fireWidth, fireHeight);
+}
+// Function to update the rocket's position and check for collisions with enemies
+function updateRocket() {
+  // Update the rocket's position
+  rocketY -= rocketSpeed;
+
+  // Check if the rocket has collided with an enemy
+  if (rocketY < enemyY + enemyHeight && rocketY + rocketHeight > enemyY &&
+      rocketX < enemyX + enemyWidth && rocketX + rocketWidth > enemyX) {
+    // The rocket has collided with the enemy, reset the enemy's position
+    enemyX = Math.random() * (canvas.width - enemyWidth);
+    enemyY = -enemyHeight;
+
+    // Draw the fire at the enemy's position
+    drawFire(enemyX, enemyY);
+
+    // Play the rocket sound
+    rocketSound.currentTime = 0;
+    document.getElementById("rocketSound").play();
+
+    // Increment the player's score
+    score++;
+  }
+  // Check if the rocket has collided with the second enemy
+  if (rocketY < enemy2Y + enemy2Height && rocketY + rocketHeight > enemy2Y &&
+      rocketX < enemy2X + enemy2Width && rocketX + rocketWidth > enemy2X) {
+    // The rocket has collided with the second enemy, reset the enemy's position
+    enemy2X = Math.random() * (canvas.width - enemy2Width);
+    enemy2Y = -enemy2Height;
+        // Draw the fire at the enemy's position
+        drawFire(enemy2X, enemy2Y);
+
+  // Play the rocket sound
+  rocketSound.currentTime = 0;
+  document.getElementById("rocketSound").play();
+    // Increment the player's score
+    score++;
+  }
+  // Check if the rocket has collided with the third enemy
+  if (rocketY < enemy3Y + enemy3Height && rocketY + rocketHeight > enemy3Y &&
+      rocketX < enemy3X + enemy3Width && rocketX + rocketWidth > enemy3X) {
+    // The rocket has collided with the third enemy, reset the enemy's position
+    enemy3X = Math.random() * (canvas.width - enemy3Width);
+    enemy3Y = -enemy3Height;
+            // Draw the fire at the enemy's position
+    drawFire(enemy3X, enemy3Y);
+
+// Play the rocket sound
+rocketSound.currentTime = 0;
+document.getElementById("rocketSound").play();
+    // Increment the player's score
+    score++;
+  }
+  // Check if the rocket has collided with the third enemy
+  if (rocketY < enemy4Y + enemy4Height && rocketY + rocketHeight > enemy4Y &&
+      rocketX < enemy4X + enemy4Width && rocketX + rocketWidth > enemy4X) {
+    // The rocket has collided with the third enemy, reset the enemy's position
+    enemy4X = Math.random() * (canvas.width - enemy4Width);
+    enemy4Y = -enemy4Height;
+            // Draw the fire at the enemy's position
+    drawFire(enemy4X, enemy4Y);
+
+// Play the rocket sound
+rocketSound.currentTime = 0;
+document.getElementById("rocketSound").play();
+    // Increment the player's score
+    score++;
+  }
+}
+  // Set up the draw function
+  function draw() {
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the player
+    ctx.drawImage(playerImg, playerX, playerY, playerWidth, playerHeight);
+    // Start the game music
+    gameMusic.play();
+    // Draw the enemy1
+    ctx.drawImage(enemy3Img, enemyX, enemyY, enemyWidth, enemyHeight);
+    // Draw the enemy2
+    ctx.drawImage(enemyImg, enemy2X, enemy2Y, enemy2Width, enemy2Height);
+    // Draw the enemy3
+    ctx.drawImage(enemy2Img, enemy3X, enemy3Y, enemy3Width, enemy3Height);
+    // Draw the enemy4
+    ctx.drawImage(enemy4Img, enemy4X, enemy4Y, enemy4Width, enemy4Height);
+    // Draw the coin
+    ctx.drawImage(coinImg, coinX, coinY, coinWidth, coinHeight);
+      // Draw the player's rocket if it is fired
+    ctx.drawImage(rocketImg, rocketX, rocketY, rocketWidth, rocketHeight);
+    
+
+    // Update the score
+    if (score > topScore) {
+      topScore = score;
+      localStorage.setItem("topScore", topScore);
+    }
+
+    // Display the score and top score
+    ctx.  font = "16px Arial";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("Score: " + score, 18, 20);
+    ctx.fillText("Top Score: " + topScore, 20, 40);
+
+    // Display the energy bar
+    if (energy < 75) {
+    ctx.fillStyle = "red";
+  } else if (energy < 150) {
+    ctx.fillStyle = "yellow";
+  } else {
+    ctx.fillStyle = "teal";
+  }
+
+    ctx.fillRect(20, 45, energy, 10);
+
+
+    // Check for game over
+    if (gameOver) {
+      restartGame();
+      return;
+    }
+
+    // Update the player's position based on the movement keys
+    if (rightPressed && playerX < canvas.width - playerWidth) {
+      playerX += playerSpeed;
+    }
+    else if (leftPressed && playerX > 0) {
+      playerX -= playerSpeed;
+    }
+    if (upPressed && playerY > 0) {
+      playerY -= playerSpeed;
+    }
+    else if (downPressed && playerY < canvas.height - playerHeight) {
+      playerY += playerSpeed;
+    }
+    updateRocket();
+    // Update the enemy's position
+    enemyY += enemySpeed;
+    enemy2Y += enemy2Speed;
+    enemy3Y += enemy3Speed;
+    enemy4Y += enemy4Speed;
+    coinY += coinSpeed;
+
+    // Check if an enemy is present in the same horizontal position as the second enemy
+    if (enemyX > enemy2X - enemyWidth && enemyX < enemy2X + enemyWidth) {
+      // Adjust the position of the second enemy to avoid the overlap
+      enemy2X = enemyX - enemyWidth - 1;
+    }
+    // Check if an enemy is present in the same horizontal position as the third enemy
+    if (enemy2X > enemy3X - enemy2Width && enemy2X < enemy3X + enemy2Width) {
+      // Adjust the position of the third enemy to avoid the overlap
+      enemy3X = enemy2X - enemy2Width - 1;
+    }
+    // Check if an enemy is present in the same horizontal position as the first enemy
+    if (enemy3X > enemyX - enemy3Width && enemy3X < enemyX + enemy3Width) {
+      // Adjust the position of the first enemy to avoid the overlap
+      enemyX = enemy3X - enemy3Width - 1;
+    }
+    // Check if an enemy is present in the same horizontal position as the first enemy
+    if (enemy4X > enemyX - enemy4Width && enemy4X < enemyX + enemy4Width) {
+      // Adjust the position of the first enemy to avoid the overlap
+      enemyX = enemy4X - enemy4Width - 1;
+    }
+
+    // Reset the enemies' positions when they go off the screen
+    if (enemyY > canvas.height) {
+      enemyX = Math.random() * (canvas.width - enemyWidth);
+      enemyY = -enemyHeight;
+    }
+    if (enemy2Y > canvas.height) {
+      enemy2X = Math.random() * (canvas.width - enemy2Width);
+      enemy2Y = -enemy2Height;
+    }
+    if (enemy3Y > canvas.height) {
+      enemy3X = Math.random() * (canvas.width - enemy3Width);
+      enemy3Y = -enemy3Height;
+    }
+    if (enemy4Y > canvas.height) {
+      enemy4X = Math.random() * (canvas.width - enemy4Width);
+      enemy4Y = -enemy4Height;
+    }
+    if (coinY > canvas.height) {
+      coinX = Math.random() * (canvas.width - coinWidth);
+      coinY = -coinHeight;
+    }
+
+    
+
+    // Decrease the energy
+    energy -= 0.23;
+
+    // Check for game over
+    if (energy <= 0) {
+      playSound(crashSound2);
+      gameOver = true;
+    }
+
+    // Run the collision detection function
+    collisionDetection();
+  }
+  // Add an event listener for the keydown event
+document.addEventListener("keydown", function(event) {
+  // Check if the spacebar was pressed
+  if (event.keyCode === 32) {
+    // The spacebar was pressed, fire the rocket
+    fireRocket();
+  }
+});
+  // Set up the restart game function
+  function restartGame() {
+    // Reset the game over flag
+    gameOver = false;
+
+    // Reset the score
+    score = 0;
+
+    // Reset the energy
+    energy = 300;
+
+    // Reset the player's position
+    playerX = canvas.width / 2;
+    playerY = canvas.height / 1.2;
+
+    // Reset the enemy's position
+    enemyX = canvas.width / 2.1;
+    enemyY = 0;
+    enemy2X = canvas.width / 0.1;
+    enemy2Y = 0;
+    enemy3X = canvas.width / 1.5;
+    enemy3Y = 0;
+    enemy4X = canvas.width / 0.9;
+    enemy4Y = 0;
+    coinX = canvas.width / 1.9;
+    coinY = 0;
+
+  }
+
+  // Set up the game loop
+  setInterval(draw, 10);
+</script>
+</body>
+</html>
