@@ -217,43 +217,43 @@ function keyDownHandler(e) {
     }
   }
 
-  // Set up the collision detection function
-  function collisionDetection() {
+    // Set up the collision detection function
+    function collisionDetection() {
     // Check for a collision between the player and the enemy
-    if  (playerX < enemyX - 25 &&
-          playerX + 125 > enemyX &&
+    if  (playerX < enemyX - 45 &&
+          playerX + 150 > enemyX &&
           playerY < enemyY + 40 &&
-          110 + playerY > enemyY) {
+          150 + playerY > enemyY) {
       // Play the crash sound
       playSound(crashSound);
 
       // Set the game over flag
       gameOver = true;
     }
-    if  (playerX < enemy2X - 25 &&
-          playerX + 125 > enemy2X &&
+    if  (playerX < enemy2X - 45 &&
+          playerX + 150 > enemy2X &&
           playerY < enemy2Y + 40 &&
-          110 + playerY > enemy2Y) {
+          150 + playerY > enemy2Y) {
       // Play the crash sound
       playSound(crashSound);
 
       // Set the game over flag
       gameOver = true;
     }
-    if  (playerX < enemy3X - 25 &&
-          playerX + 125 > enemy3X &&
-          playerY < enemy3Y + 40 &&
-          110 + playerY > enemy3Y) {
+    if  (playerX < enemy3X - 45 &&
+          playerX + 150 > enemy3X &&
+          playerY < enemy3Y + 80 &&
+          200 + playerY > enemy3Y) {
       // Play the crash sound
       playSound(crashSound);
 
       // Set the game over flag
       gameOver = true;
     }
-    if  (playerX < enemy4X - 25 &&
-          playerX + 125 > enemy4X &&
-          playerY < enemy4Y + 40 &&
-          110 + playerY > enemy4Y) {
+    if  (playerX < enemy4X &&
+          playerX + 100 > enemy4X &&
+          playerY < enemy4Y + 120 &&
+          210 + playerY > enemy4Y) {
       // Play the crash sound
       playSound(crashSound);
 
