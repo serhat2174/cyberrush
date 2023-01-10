@@ -72,7 +72,7 @@
   var downPressed = false;
 
   // Set up the player's speed
-  var playerSpeed = 7;
+  var playerSpeed = 8;
 
   // Set up the player's size
   var playerWidth = 260;
@@ -87,7 +87,7 @@
   var enemyHeight = 95;
 
   // Set up the enemy's speed
-  var enemySpeed = 8;
+  var enemySpeed = 0.3;
 
   // Set up the second enemy's starting position
   var enemy2X = canvas.width / 0.1;
@@ -98,7 +98,7 @@
   var enemy2Height = 100;
 
   // Set up the second enemy's speed
-  var enemy2Speed = 6.7;
+  var enemy2Speed = 1.1;
 
   // Set up the second enemy's starting position
   var enemy3X = canvas.width / 1.5;
@@ -109,7 +109,7 @@
   var enemy3Height = 130;
 
   // Set up the second enemy's speed
-  var enemy3Speed = 5;
+  var enemy3Speed = 1.8;
  
     // Set up the second enemy's starting position
     var enemy4X = canvas.width / 0.9;
@@ -120,7 +120,7 @@
   var enemy4Height = 180;
 
   // Set up the second enemy's speed
-  var enemy4Speed = 4.3;
+  var enemy4Speed = 2.3;
 
   // Set up the coin's starting position
   var coinX = Math.random() * (canvas.width - 50);
@@ -525,9 +525,9 @@ document.addEventListener("keydown", function(event) {
 
     // Reset the enemy's position
     enemyX = canvas.width / 2.1;
-    enemyY = 0;
+    enemyY = -100;
     enemy2X = canvas.width / 0.1;
-    enemy2Y = 0;
+    enemy2Y = -100;
     enemy3X = canvas.width / 1.5;
     enemy3Y = 0;
     enemy4X = canvas.width / 0.9;
