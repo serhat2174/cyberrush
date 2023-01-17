@@ -3,14 +3,14 @@
 <head>
   <title>cyber rush</title>
   <!-- Add the viewport meta tag to set the canvas to the full screen size -->
-  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <style>
   body {
     background-image: url('road5.jpeg');
     background-size: 15%;
     animation: scroll 400s linear infinite; /* This will make the background image scroll continuously */
-    width: 1920px;
+ 
 }
 
 @keyframes scroll {
@@ -46,8 +46,8 @@
     
   // Initialize the canvas element and context
   var counter = 0;
-  var windowWidth = window.innerWidth;
-  var windowHeight = window.innerHeight;
+  var windowWidth = 1881;
+  var windowHeight = 1058;
   var canvas = document.getElementById("gameCanvas");
   var ctx = canvas.getContext("2d");
   document.getElementById("gameCanvas").width = windowWidth * 0.98;
