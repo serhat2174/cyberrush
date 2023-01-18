@@ -7,25 +7,37 @@
 </head>
 <style>
   body {
+    background-color: black;
+    margin: auto;
+    display: block;
+       
+}
+canvas {
     background-image: url('road5.jpeg');
     background-size: 15%;
+    margin: auto;
+    display: block;
     animation: scroll 400s linear infinite; /* This will make the background image scroll continuously */
- 
-}
-
-@keyframes scroll {
-  /* The keyframes for the scroll animation */
-  from {
-    background-position: 0% 0%; /* Start the background image at the top left corner */
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
   }
-  to {
-    background-position: 0% 20000%; /* End the background image at the bottom left corner */
+  @keyframes scroll {
+    /* The keyframes for the scroll animation */
+    from {
+      background-position: 0% 0%; /* Start the background image at the top left corner */
+    }
+    to {
+      background-position: 0% 20000%; /* End the background image at the bottom left corner */
+    }
   }
-}
 </style>
+
   <!-- Change the canvas size to match the viewport size -->
   <canvas id="gameCanvas" ></canvas>
-
   <!-- Add image elements for the player and enemy -->
   <img id="playerImg" src="cybertruck.png" style="display:none;">
   <img id="enemyImg" src="enemy1.png" style="display:none;">
@@ -43,15 +55,15 @@
    <audio id="rocketSound2" src="https://assets.mixkit.co/sfx/preview/mixkit-war-explosions-2773.mp3" style="display:none"></audio>
    <audio id="gameMusic" src="https://d1s1y0ui543e5o.cloudfront.net/tracks/1458/preview/811.mp3" loop></audio>
   <script>
-    
+
   // Initialize the canvas element and context
   var counter = 0;
-  var windowWidth = 1881;
-  var windowHeight = 1058;
+  var windowWidth = 1920;
+  var windowHeight = 1080;
   var canvas = document.getElementById("gameCanvas");
   var ctx = canvas.getContext("2d");
-  document.getElementById("gameCanvas").width = windowWidth * 0.98;
-  document.getElementById("gameCanvas").height = windowHeight * 0.98;
+  document.getElementById("gameCanvas").width = windowWidth;
+  document.getElementById("gameCanvas").height = windowHeight;
     // Set up the player's rocket variables
   var rocketFired = false;
   var rocketX = playerX + playerWidth / 3.3;
@@ -121,7 +133,7 @@
   var enemy4Height = 180;
 
   // Set up the second enemy's speed
-  var enemy4Speed = 4.3;
+  var enemy4Speed = 4.5;
 
   // Set up the coin's starting position
   var coinX = Math.random() * (canvas.width - 50);
@@ -133,7 +145,7 @@
   var coinHeight = 50;
 
   // Set up the coin's speed
-  var coinSpeed = 3.45;
+  var coinSpeed = 4.03;
 
   // Set up the player's score
   var score = 0;
@@ -540,5 +552,6 @@ document.addEventListener("keydown", function(event) {
   // Set up the game loop
   setInterval(draw, 10);
 </script>
+
 </body>
 </html>
